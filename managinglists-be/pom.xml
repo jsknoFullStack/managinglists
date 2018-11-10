@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <apache.lang3.version>3.8</apache.lang3.version>
     </properties>
 
     <dependencies>
@@ -58,7 +59,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.8</version>
+            <version>${apache.lang3.version}</version>
         </dependency>
     </dependencies>
 
