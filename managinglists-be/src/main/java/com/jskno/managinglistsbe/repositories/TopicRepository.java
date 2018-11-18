@@ -15,5 +15,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("SELECT t FROM Topic t WHERE t.name LIKE CONCAT('%',:name,'%')")
     List<Topic> findTopicMatchingName(String name);
 
+    void deleteTopicByName(String name);
+
 
  }

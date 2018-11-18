@@ -10,5 +10,9 @@ public interface TodoItemService {
 
     TodoItem saveOrUpdateTodoItem(TodoItem todoItem);
 
-    List<TodoItem> getItemsByTopic(Topic topic);
+    List<TodoItem> getTodoItemsByTopic(Topic topic);
+
+    TodoItem getTodoItemById(Long id);
+
+    void deleteTodoItemById(Long id);
 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "topics")
@@ -16,8 +17,9 @@ public class Topic extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    @NotNull
+    @Column(name = "name", unique = true)
+    @NotNull(message = "The topic name is required")
+    @Size(min = 3, max = 20, message = "The topic name must be between 3 and 20 characters")
     private String name;
 
     public Topic() {

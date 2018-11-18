@@ -3,6 +3,7 @@ package com.jskno.managinglistsbe.domain;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -16,10 +17,11 @@ public class TodoItem extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "topic_id")
+    @NotNull(message = "Every TodoItem must be linked to a Topic")
     private Topic topic;
 
     @Column(name = "element")
-    @NotNull
+    @NotBlank(message = "The TodoItem element is required")
     private String element;
 
     @Column(name = "notes")

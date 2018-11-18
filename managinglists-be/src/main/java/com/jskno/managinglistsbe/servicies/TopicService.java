@@ -12,5 +12,6 @@ public interface TopicService {
     Topic findTopicByName(String name);
     List<Topic> findTopicMatchingName(String name);
     void deleteTopicById(Long id);
+    void deleteTopicByName(String name);
     Topic saveOrUpdateTopic(Topic topic);
 }

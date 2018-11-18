@@ -1,8 +1,11 @@
 package com.jskno.managinglistsbe.servicies;
 
 import com.jskno.managinglistsbe.domain.Topic;
+import com.jskno.managinglistsbe.exception.EntityConstraintViolationException;
+import com.jskno.managinglistsbe.exception.TopicNotFoundException;
 import com.jskno.managinglistsbe.repositories.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 
 import javax.persistence.EntityNotFoundException;
@@ -15,8 +18,17 @@ public class TopicServiceImpl implements TopicService {
     private TopicRepository topicRepository;
 
     @Override
-    public List<Topic> findAllTopics() {
-        return topicRepository.findAll();
+    public Topic saveOrUpdateTopic(Topic topic) {
+        try {
+            topic.setName(topic.getName().toUpperCase());
+            return topicRepository.save(topic);
+        } catch(DataIntegrityViolationException ex) {
+            throw new EntityConstraintViolationException("uniqueTopicName",
+                    new StringBuilder()
+                            .append("This Topic already exist")
+                            .append(topic.getName())
+                            .toString());
+        }
     }
 
     @Override
@@ -27,12 +39,21 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic findTopicByName(String name) {
-        return topicRepository.findTopicByName(name);
+        Topic topic = topicRepository.findTopicByName(name.toUpperCase());
+        if(topic == null) {
+            throw new TopicNotFoundException("Cannot find topic with NAME '" + name.toUpperCase() + "'. This topic does not exist");
+        }
+        return topic;
     }
 
     @Override
     public List<Topic> findTopicMatchingName(String name) {
-        return topicRepository.findTopicMatchingName(name);
+        return topicRepository.findTopicMatchingName(name.toUpperCase());
+    }
+
+    @Override
+    public List<Topic> findAllTopics() {
+        return topicRepository.findAll();
     }
 
     @Override
@@ -41,7 +62,13 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic saveOrUpdateTopic(Topic topic) {
-        return topicRepository.save(topic);
+    public void deleteTopicByName(String name) {
+        Topic topic = topicRepository.findTopicByName(name.toUpperCase());
+        if(topic == null) {
+            throw new TopicNotFoundException("Cannot delete topic with NAME '" + name.toUpperCase() + "'. This topic does not exist");
+        }
+        this.topicRepository.delete(topic);
     }
+
+
 }
