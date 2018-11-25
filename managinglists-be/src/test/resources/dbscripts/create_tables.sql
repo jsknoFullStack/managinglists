@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `atachments`;
 CREATE TABLE `topics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL UNIQUE,
+  `desciption` varchar(255),
   `created_at` datetime DEFAULT NULL,
   `created_by_user` varchar(255) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,

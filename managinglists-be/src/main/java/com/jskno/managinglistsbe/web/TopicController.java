@@ -25,21 +25,21 @@ public class TopicController {
         return topicService.saveOrUpdateTopic(topic);
     }
 
-    @GetMapping("/{topicName}")
+    @GetMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Topic getTopicByName(
-            @Size(min = 3, max = 20, message = "topicName->The topic name must be between 3 and 20 characters")
-            @PathVariable String topicName) {
-        return topicService.findTopicByName(topicName);
+            @Size(min = 3, max = 20, message = "name->The topic name must be between 3 and 20 characters")
+            @PathVariable String name) {
+        return topicService.findTopicByName(name);
     }
 
-    @DeleteMapping("/{topicName}")
+    @DeleteMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
     public String deleteTopic(
-            @Size(min = 3, max = 20,message = "topicName->The topic name must be between 3 and 20 characters")
-            @PathVariable String topicName) {
-        this.topicService.deleteTopicByName(topicName.toUpperCase());
-        return "Topic with NAME: '".concat(topicName.toUpperCase()).concat("' was deleted succesfully.");
+            @Size(min = 3, max = 20,message = "name->The topic name must be between 3 and 20 characters")
+            @PathVariable String name) {
+        this.topicService.deleteTopicByName(name);
+        return "Topic with NAME: '".concat(name.toUpperCase()).concat("' was deleted succesfully.");
     }
 
     @GetMapping("/all")
