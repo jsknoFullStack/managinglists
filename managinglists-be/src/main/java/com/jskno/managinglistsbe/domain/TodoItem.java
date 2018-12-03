@@ -5,6 +5,7 @@ import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "todoitems")
@@ -26,6 +27,9 @@ public class TodoItem extends AbstractEntity {
 
     @Column(name = "notes")
     private String notes;
+
+    @OneToMany(mappedBy = "todoItem")
+    private List<Attachment> attachments;
 
     public Long getId() {
         return id;
@@ -57,6 +61,14 @@ public class TodoItem extends AbstractEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     @Override

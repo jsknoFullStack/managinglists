@@ -16,14 +16,17 @@ public class Attachment extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "filename")
+    @NotBlank(message = "The filename is required")
+    private String filename;
+
+    @Column(name = "path")
+    private String path;
+
     @ManyToOne
     @JoinColumn(name = "todoitem_id")
     @NotNull(message = "The attachment must be linked to a TodoItem")
     private TodoItem todoItem;
-
-    @Column(name = "path")
-    @NotBlank(message = "The attachment path is required")
-    private String path;
 
     public Long getId() {
         return id;
@@ -33,12 +36,12 @@ public class Attachment extends AbstractEntity {
         this.id = id;
     }
 
-    public TodoItem getTodoItem() {
-        return todoItem;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setTodoItem(TodoItem todoItem) {
-        this.todoItem = todoItem;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public String getPath() {
@@ -47,6 +50,14 @@ public class Attachment extends AbstractEntity {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public TodoItem getTodoItem() {
+        return todoItem;
+    }
+
+    public void setTodoItem(TodoItem todoItem) {
+        this.todoItem = todoItem;
     }
 
     @Override

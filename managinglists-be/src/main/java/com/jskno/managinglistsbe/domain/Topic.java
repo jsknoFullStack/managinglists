@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "topics")
@@ -19,11 +20,14 @@ public class Topic extends AbstractEntity {
 
     @Column(name = "name", unique = true)
     @NotNull(message = "The topic name is required")
-    @Size(min = 3, max = 20, message = "The topic name must be between 3 and 20 characters")
+    @Size(min = 3, max = 45, message = "The topic name must be between 3 and 20 characters")
     private String name;
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "topic")
+    private List<TodoItem> todoItems;
 
     public Topic() {
     }
@@ -54,6 +58,14 @@ public class Topic extends AbstractEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<TodoItem> getTodoItems() {
+        return todoItems;
+    }
+
+    public void setTodoItems(List<TodoItem> todoItems) {
+        this.todoItems = todoItems;
     }
 
     @Override

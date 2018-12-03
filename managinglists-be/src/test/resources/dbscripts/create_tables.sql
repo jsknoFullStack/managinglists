@@ -1,49 +1,49 @@
---
--- Table structure for table `todolist_db`
---
-
+DROP TABLE IF EXISTS `attachments`;
+DROP TABLE IF EXISTS `todoitems`;
 DROP TABLE IF EXISTS `topics`;
-DROP TABLE IF EXISTS `todoslist`;
-DROP TABLE IF EXISTS `atachments`;
 
 CREATE TABLE `topics` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL UNIQUE,
-  `desciption` varchar(255),
-  `created_at` datetime DEFAULT NULL,
+  `description` varchar(255),
+  `created_at` datetime(6) DEFAULT NULL,
   `created_by_user` varchar(255) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
   `updated_by_user` varchar(255) DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
   `deleted_by_user` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `topics_uk` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `todoitems` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic_id` int(11) not null,
-  `element` varchar(45) NOT null,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `topic_id` bigint(20) NOT NULL,
+  `element` varchar(255) NOT null,
   `notes` varchar(1500) NOT null,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
   `created_by_user` varchar(255) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
   `updated_by_user` varchar(255) DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
   `deleted_by_user` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `todoitems_key` (`topic_id`),
   CONSTRAINT `todoslist_fk` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `atachments` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `todoitem_id` int(11) not null,
-  `path` varchar(45) NOT null,
-  `created_at` datetime DEFAULT NULL,
+CREATE TABLE `attachments` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(45) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `todoitem_id` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
   `created_by_user` varchar(255) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
   `updated_by_user` varchar(255) DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
   `deleted_by_user` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `atachmentst_fk` FOREIGN KEY (`todolist_id`) REFERENCES `todoslist` (`id`)
+  KEY `attachments_key` (`todoitem_id`),
+  CONSTRAINT `atachmentst_fk` FOREIGN KEY (`todoitem_id`) REFERENCES `todoitems` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
