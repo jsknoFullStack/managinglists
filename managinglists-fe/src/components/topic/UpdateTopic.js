@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createTopic, getTopic } from "../../actions/topicActions";
+import { updateTopic, getTopic } from "../../actions/topicActions";
 import classnames from "classnames";
+import { Link } from "react-router-dom";
 
 class UpdateTopic extends Component {
   constructor() {
     super();
     this.state = {
       topic: {
+        id: "",
         name: "",
         description: ""
       },
@@ -20,8 +22,8 @@ class UpdateTopic extends Component {
   }
 
   componentDidMount() {
-    const { name } = this.props.match.params;
-    this.props.getTopic(name, this.props.history);
+    const { id } = this.props.match.params;
+    this.props.getTopic(id, this.props.history);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,7 +47,8 @@ class UpdateTopic extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.createTopic(this.state.topic, this.props.history);
+    const { id } = this.props.match.params;
+    this.props.updateTopic(id, this.state.topic, this.props.history);
   }
 
   render() {
@@ -58,6 +61,9 @@ class UpdateTopic extends Component {
           <div className="container">
             <div className="row">
               <div className="col-md-8 m-auto">
+                <Link to="/dashboard" className="btn btn-light">
+                  Back to Dashboard
+                </Link>
                 <h5 className="display-4 text-center">Update Topic form</h5>
                 <hr />
                 <form onSubmit={this.onSubmit}>
@@ -110,7 +116,7 @@ class UpdateTopic extends Component {
 UpdateTopic.propTypes = {
   getTopic: PropTypes.func.isRequired,
   topic: PropTypes.object.isRequired,
-  createTopic: PropTypes.func.isRequired,
+  updateTopic: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired
 };
 
@@ -121,5 +127,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getTopic, createTopic }
+  { getTopic, updateTopic }
 )(UpdateTopic);

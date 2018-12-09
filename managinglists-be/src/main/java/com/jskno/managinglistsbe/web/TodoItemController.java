@@ -14,7 +14,7 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
-@RequestMapping("todoitem")
+@RequestMapping("topic/{topicId}/todoitem")
 @Validated
 public class TodoItemController {
 
@@ -23,34 +23,34 @@ public class TodoItemController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoItem createNewTodoItem(@Valid @RequestBody TodoItem todoItem) {
+    public TodoItem createNewTodoItem(@Valid @RequestBody TodoItem todoItem, @PathVariable String topicId) {
+        return todoItemService.saveOrUpdateTodoItem(todoItem);
+    }
+
+    @PatchMapping("/{todoItemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public TodoItem updateTodoItem(@Valid @RequestBody TodoItem todoItem, @PathVariable String topicId, @PathVariable Long todoItemId) {
         return todoItemService.saveOrUpdateTodoItem(todoItem);
     }
 
     @GetMapping("/{todoItemId}")
     @ResponseStatus(HttpStatus.OK)
-    public TodoItem getTodoItemById(@PathVariable Long todoItemId) {
+    public TodoItem getTodoItemById(@PathVariable String topicId, @PathVariable Long todoItemId) {
         return todoItemService.getTodoItemById(todoItemId);
     }
 
 
-    @GetMapping("/todoItemsByTopic")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public List<TodoItem> getItemsByTopic(@Valid @RequestBody Topic topic) {
-        return this.todoItemService.getTodoItemsByTopic(topic);
-    }
-
-    @GetMapping("/todoItemsByTopicId/{topicId}")
-    public List<TodoItem> getTodoItemsByTopicId(
-            @NotNull @Positive(message = "topicId->The topicId must be a positive number")
-            @PathVariable Long topicId) {
-        return this.todoItemService.getTodoItemsByTopic(new Topic(topicId));
+    public List<TodoItem> getTodoItemsByTopicName(@PathVariable Long topicId) {
+        return this.todoItemService.getTodoItemsByTopicId(topicId);
     }
 
     @DeleteMapping("/{todoItemId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTodoItemById(
-            @Positive(message = "topicId->The todoItemId must be a positive number")
+            @PathVariable Long topicI,
+            @Positive(message = "todoItemId->The todoItemId must be a positive number")
             @PathVariable Long todoItemId) {
         todoItemService.deleteTodoItemById(todoItemId);
     }

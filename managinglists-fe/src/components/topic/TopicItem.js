@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { deleteTopic } from "../../actions/topicActions";
+//import { deleteTopic } from "../../actions/topicActions";
 
 class TopicItem extends Component {
-  onDeleteClick = topicName => {
-    this.props.deleteTopic(topicName);
+  onDeleteClick = id => {
+    this.props.deleteTopic(id);
   };
 
   render() {
@@ -24,22 +24,22 @@ class TopicItem extends Component {
             </div>
             <div className="col-md-4 d-none d-lg-block">
               <ul className="list-group">
-                <Link to={`/updateTopic/${topic.name}`}>
+                <Link to={`/topicBoard/${topic.id}`}>
                   <li className="list-group-item board">
-                    <i className="fa fa-flag-checkered pr-1"> Project Board </i>
+                    <i className="fa fa-flag-checkered pr-1"> Topic Board </i>
                   </li>
                 </Link>
-                <Link to={`/updateTopic/${topic.name}`}>
+                <Link to={`/updateTopic/${topic.id}`}>
                   <li className="list-group-item update">
-                    <i className="fa fa-edit pr-1"> Update Project</i>
+                    <i className="fa fa-edit pr-1"> Update Topic</i>
                   </li>
                 </Link>
 
                 <li
                   className="list-group-item delete"
-                  onClick={this.onDeleteClick.bind(this, topic.name)}
+                  onClick={this.onDeleteClick.bind(this, topic.id)}
                 >
-                  <i className="fa fa-minus-circle pr-1"> Delete Project</i>
+                  <i className="fa fa-minus-circle pr-1"> Delete Topic</i>
                 </li>
               </ul>
             </div>
@@ -54,7 +54,4 @@ TopicItem.propTypes = {
   deleteTopic: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { deleteTopic }
-)(TopicItem);
+export default connect(null)(TopicItem);

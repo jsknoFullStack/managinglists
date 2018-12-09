@@ -10,7 +10,9 @@ public interface TodoItemService {
 
     TodoItem saveOrUpdateTodoItem(TodoItem todoItem);
 
-    List<TodoItem> getTodoItemsByTopic(Topic topic);
+    List<TodoItem> getTodoItemsByTopicName(String topicName);
+
+    List<TodoItem> getTodoItemsByTopicId(Long topicId);
 
     TodoItem getTodoItemById(Long id);
 

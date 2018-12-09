@@ -22,8 +22,13 @@ public class TodoItemServiceImpl implements TodoItemService{
     }
 
     @Override
-    public List<TodoItem> getTodoItemsByTopic(Topic topic) {
-        return todoItemRepository.getItemsByTopic(topic.getId());
+    public List<TodoItem> getTodoItemsByTopicName(String topicName) {
+        return todoItemRepository.findByTopic_Name(topicName);
+    }
+
+    @Override
+    public List<TodoItem> getTodoItemsByTopicId(Long topicId) {
+        return todoItemRepository.findByTopic_Id(topicId);
     }
 
     @Override

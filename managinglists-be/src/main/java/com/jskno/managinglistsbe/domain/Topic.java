@@ -1,5 +1,6 @@
 package com.jskno.managinglistsbe.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,13 +21,14 @@ public class Topic extends AbstractEntity {
 
     @Column(name = "name", unique = true)
     @NotNull(message = "The topic name is required")
-    @Size(min = 3, max = 45, message = "The topic name must be between 3 and 20 characters")
+    @Size(min = 3, max = 45, message = "The topic name must be between 3 and 45 characters")
     private String name;
 
     @Column(name = "description")
     private String description;
 
     @OneToMany(mappedBy = "topic")
+    @JsonIgnore
     private List<TodoItem> todoItems;
 
     public Topic() {

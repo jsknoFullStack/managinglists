@@ -12,5 +12,11 @@ import java.util.List;
 public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
 
     @Query("SELECT t FROM TodoItem t JOIN t.topic top WHERE top.id = :topicId")
-    public List<TodoItem> getItemsByTopic(@Param("topicId") Long topicId);
+    List<TodoItem> getItemsByTopic(@Param("topicId") Long topicId);
+
+    List<TodoItem> findByTopic_Name(String topicName);
+
+    List<TodoItem> findByTopic_Id(Long topicId);
+
+
 }

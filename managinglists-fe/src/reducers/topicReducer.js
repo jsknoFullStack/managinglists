@@ -22,9 +22,7 @@ export default function(state = initialState, action) {
     case DELETE_TOPIC:
       return {
         ...state,
-        topics: state.topics.filter(
-          topic => topic.topicIdentifier !== action.payload
-        )
+        topics: state.topics.filter(topic => topic.id !== action.payload)
       };
 
     default:

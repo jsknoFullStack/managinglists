@@ -9,6 +9,9 @@ import Header from "./components/layout/Header";
 import Dashboard from "./components/Dashboard";
 import AddTopic from "./components/topic/AddTopic";
 import UpdateTopic from "./components/topic/UpdateTopic";
+import TopicBoard from "./components/topicBoard/TopicBoard";
+import AddTodoItem from "./components/topicBoard/todoItems/AddTodoItem";
+import UpdateTodoItem from "./components/topicBoard/todoItems/UpdateTodoItem";
 
 class App extends Component {
   render() {
@@ -19,7 +22,18 @@ class App extends Component {
             <Header />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/addTopic" component={AddTopic} />
-            <Route exact path="/updateTopic/:name" component={UpdateTopic} />
+            <Route exact path="/updateTopic/:id" component={UpdateTopic} />
+            <Route exact path="/topicBoard/:topicId" component={TopicBoard} />
+            <Route
+              exact
+              path="/topic/:topicId/addTodoItem"
+              component={AddTodoItem}
+            />
+            <Route
+              exact
+              path="/topic/:topicId/viewTodoItem/:todoItemId"
+              component={UpdateTodoItem}
+            />
           </div>
         </Router>
       </Provider>

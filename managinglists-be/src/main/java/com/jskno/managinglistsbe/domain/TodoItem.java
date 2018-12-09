@@ -1,5 +1,6 @@
 package com.jskno.managinglistsbe.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class TodoItem extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "topic_id")
     @NotNull(message = "Every TodoItem must be linked to a Topic")
+//    @JsonIgnore
     private Topic topic;
 
     @Column(name = "element")
