@@ -22,6 +22,81 @@ export const addTodoItem = (topicId, todoItem, history) => async dispatch => {
   }
 };
 
+export const addTodoItemAttachments = (
+  todoItem,
+  files,
+  topicId,
+  history
+) => async dispatch => {
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data"
+    }
+  };
+
+  const formDataFiles = new FormData();
+  //formDataFiles.set("todoItem", todoItem);
+  formDataFiles.append(
+    "todoItem",
+    new Blob([JSON.stringify(todoItem)], {
+      type: "application/json"
+    })
+  );
+  for (const file of files) {
+    formDataFiles.append("files", file);
+  }
+
+  try {
+    await axios.post(
+      `/topic/${topicId}/todoitem/attachments`,
+      formDataFiles
+      //config
+    );
+    history.push(`/topicBoard/${topicId}`);
+    dispatch({
+      type: GET_ERRORS,
+      payload: {}
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+
+export const addTodoItemAttachments2 = (
+  todoItem,
+  files,
+  topicId,
+  history
+) => async dispatch => {
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data"
+    }
+  };
+
+  const formDataFiles = new FormData();
+  for (const file of files) {
+    formDataFiles.append("files", file);
+  }
+
+  try {
+    await axios.post(`/attachment/uploadMultipleFiles`, formDataFiles, config);
+    history.push(`/topicBoard/${topicId}`);
+    dispatch({
+      type: GET_ERRORS,
+      payload: {}
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+
 export const updateTodoItem = (
   topicId,
   todoItemId,

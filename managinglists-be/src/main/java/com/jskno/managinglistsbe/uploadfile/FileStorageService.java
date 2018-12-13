@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 @Service
 public class FileStorageService {
@@ -30,6 +31,7 @@ public class FileStorageService {
             throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
+
     public String storeFile(MultipartFile file) {
 
         // Normalize file name
@@ -63,5 +65,9 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    public void storeFile(MultipartFile[] files) {
+        Arrays.asList(files).forEach(file -> this.storeFile(file));
     }
 }

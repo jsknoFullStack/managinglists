@@ -1,11 +1,13 @@
 package com.jskno.managinglistsbe.servicies;
 
+import com.jskno.managinglistsbe.domain.Attachment;
 import com.jskno.managinglistsbe.domain.TodoItem;
-import com.jskno.managinglistsbe.domain.Topic;
 import com.jskno.managinglistsbe.exception.TodoItemNotFoundException;
 import com.jskno.managinglistsbe.repositories.TodoItemRepository;
+import com.jskno.managinglistsbe.uploadfile.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,9 @@ public class TodoItemServiceImpl implements TodoItemService{
 
     @Autowired
     private TodoItemRepository todoItemRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Override
     public TodoItem saveOrUpdateTodoItem(TodoItem todoItem) {
@@ -45,5 +50,18 @@ public class TodoItemServiceImpl implements TodoItemService{
             throw new TodoItemNotFoundException(String.format("Cannot delete Todo Item with ID '[%s]'. This item does not exist", id));
         }
         todoItemRepository.delete(todoItem.get());
+    }
+
+    @Override
+    public TodoItem saveOrUpdateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId) {
+        for(Attachment attachment : todoItem.getAttachments()) {
+            attachment.setId(null);
+            attachment.setFilename("12412");
+            attachment.setTodoItem(todoItem);
+            attachment.setPath("32535");
+        }
+        TodoItem savedTodoItem = todoItemRepository.save(todoItem);
+        fileStorageService.storeFile(files);
+        return savedTodoItem;
     }
 }

@@ -35,6 +35,7 @@ CREATE TABLE `todoitems` (
 CREATE TABLE `attachments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `filename` varchar(45) NOT NULL,
+  `size` bigint(20) NOT NULL,
   `path` varchar(255) NOT NULL,
   `todoitem_id` bigint(20) NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,

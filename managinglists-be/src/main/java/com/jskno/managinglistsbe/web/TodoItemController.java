@@ -3,10 +3,12 @@ package com.jskno.managinglistsbe.web;
 import com.jskno.managinglistsbe.domain.TodoItem;
 import com.jskno.managinglistsbe.domain.Topic;
 import com.jskno.managinglistsbe.servicies.TodoItemService;
+import com.jskno.managinglistsbe.uploadfile.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -23,8 +25,17 @@ public class TodoItemController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoItem createNewTodoItem(@Valid @RequestBody TodoItem todoItem, @PathVariable String topicId) {
+    public TodoItem createNewTodoItem(@Valid @RequestBody TodoItem todoItem, @PathVariable Long topicId) {
         return todoItemService.saveOrUpdateTodoItem(todoItem);
+    }
+
+
+    @PostMapping(value = "/attachments", consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public TodoItem createNewTodoItemWithAttachement(@Valid @RequestPart("todoItem") TodoItem todoItem,
+                                                     @RequestPart("files") MultipartFile[] files,
+                                                     @PathVariable Long topicId) {
+        return todoItemService.saveOrUpdateTodoItem(todoItem, files, topicId);
     }
 
     @PatchMapping("/{todoItemId}")

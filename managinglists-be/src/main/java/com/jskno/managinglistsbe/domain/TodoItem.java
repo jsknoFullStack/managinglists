@@ -30,7 +30,7 @@ public class TodoItem extends AbstractEntity {
     @Column(name = "notes")
     private String notes;
 
-    @OneToMany(mappedBy = "todoItem")
+    @OneToMany(mappedBy = "todoItem", cascade = CascadeType.ALL)
     private List<Attachment> attachments;
 
     public Long getId() {

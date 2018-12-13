@@ -1,6 +1,7 @@
 package com.jskno.managinglistsbe.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 
 import javax.persistence.*;
@@ -20,12 +21,16 @@ public class Attachment extends AbstractEntity {
     @NotBlank(message = "The filename is required")
     private String filename;
 
+    @Column(name = "size")
+    private Long size;
+
     @Column(name = "path")
     private String path;
 
     @ManyToOne
     @JoinColumn(name = "todoitem_id")
     @NotNull(message = "The attachment must be linked to a TodoItem")
+    @JsonIgnore
     private TodoItem todoItem;
 
     public Long getId() {
@@ -42,6 +47,14 @@ public class Attachment extends AbstractEntity {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
     }
 
     public String getPath() {

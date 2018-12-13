@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { addTodoItem } from "../../../actions/todoItemActions";
+import {
+  addTodoItem,
+  addTodoItemAttachments,
+  addTodoItemAttachments2
+} from "../../../actions/todoItemActions";
 import PropTypes from "prop-types";
+import BootstrapTable from "react-bootstrap-table-next";
 
 class AddTodoItem extends Component {
   constructor(props) {
@@ -15,9 +20,11 @@ class AddTodoItem extends Component {
       notes: "",
       attachments: [],
       topic: {
-        id: topicId
+        id: topicId,
+        name: ""
       },
-      errors: {}
+      errors: {},
+      filesToUpload: []
     };
 
     this.onChange = this.onChange.bind(this);
@@ -36,11 +43,26 @@ class AddTodoItem extends Component {
   }
 
   onAttachmentsChange(e) {
-    this.setState({ file: e.target.files[0] });
+    let index = this.state.attachments.length;
+    const files = e.target.files;
+    const attachmentsFromFiles = [];
+    for (var file of files) {
+      const attachmentFromFile = {
+        id: index++,
+        name: file.name,
+        size: file.size
+      };
+      attachmentsFromFiles.push(attachmentFromFile);
+    }
+    this.setState(prevState => ({
+      filesToUpload: [...prevState.filesToUpload, ...files],
+      attachments: [...prevState.attachments, ...attachmentsFromFiles]
+    }));
   }
 
   onSubmit(e) {
     e.preventDefault();
+
     const newTodoItem = {
       element: this.state.element,
       notes: this.state.notes,
@@ -49,12 +71,11 @@ class AddTodoItem extends Component {
         id: this.state.topic.id
       }
     };
-    const files = new FormData();
-    files.append("file", this.state.attachments);
-    files.append("name", "fileName");
-    this.props.addTodoItem(
-      this.state.topic.id,
+
+    this.props.addTodoItemAttachments(
       newTodoItem,
+      this.state.filesToUpload,
+      this.state.topic.id,
       this.props.history
     );
   }
@@ -62,6 +83,21 @@ class AddTodoItem extends Component {
   render() {
     const { topicId } = this.props.match.params;
     const { errors } = this.state;
+    const columns = [
+      {
+        dataField: "id",
+        text: "File Number"
+      },
+      {
+        dataField: "name",
+        text: "File Name"
+      },
+      {
+        dataField: "size",
+        text: "File Size"
+      },
+      { dataField: "", text: "" }
+    ];
 
     return (
       <div className="add-PBI">
@@ -73,14 +109,14 @@ class AddTodoItem extends Component {
               </Link>
               <h4 className="display-4 text-center">Add Todo Item</h4>
               <p className="lead text-center">
-                Topic Name: {this.state.projectIdentifier}
+                Topic Name: {this.state.topic.name}
               </p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <input
                     type="text"
                     className={classnames("form-control form-control-lg ", {
-                      "is-invalid": errors.summary
+                      "is-invalid": errors.element
                     })}
                     name="element"
                     placeholder="Topic Element"
@@ -109,17 +145,23 @@ class AddTodoItem extends Component {
                 <div className="form-group">
                   <input
                     type="file"
+                    multiple
                     className={classnames("form-control form-control-lg ", {
                       "is-invalid": errors.attachments
                     })}
                     name="attachments"
-                    value={this.state.attachments}
+                    //value={this.state.attachments}
                     onChange={this.onAttachmentsChange}
                   />
                   {errors.attachments && (
                     <div className="invalid-feedback">{errors.attachments}</div>
                   )}
                 </div>
+                <BootstrapTable
+                  keyField="id"
+                  data={this.state.attachments}
+                  columns={columns}
+                />
 
                 <input
                   type="submit"
@@ -136,6 +178,8 @@ class AddTodoItem extends Component {
 
 AddTodoItem.propTypes = {
   addTodoItem: PropTypes.func.isRequired,
+  addTodoItemAttachments: PropTypes.func.isRequired,
+  addTodoItemAttachments2: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired
 };
 
@@ -145,5 +189,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { addTodoItem }
+  { addTodoItem, addTodoItemAttachments, addTodoItemAttachments2 }
 )(AddTodoItem);
