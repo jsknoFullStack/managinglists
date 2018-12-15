@@ -6,6 +6,7 @@ import com.jskno.managinglistsbe.domain.base.AbstractEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,8 +31,12 @@ public class TodoItem extends AbstractEntity {
     @Column(name = "notes")
     private String notes;
 
-    @OneToMany(mappedBy = "todoItem", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "todoItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments;
+
+    public TodoItem() {
+        this.attachments = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
@@ -71,6 +76,10 @@ public class TodoItem extends AbstractEntity {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public void addAttachment(Attachment attachment) {
+        getAttachments().add(attachment);
     }
 
     @Override

@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import classnames from "classnames";
+import { getTopic } from "../../../actions/topicActions";
 import {
   addTodoItem,
   addTodoItemAttachments,
   addTodoItemAttachments2
 } from "../../../actions/todoItemActions";
 import PropTypes from "prop-types";
-import BootstrapTable from "react-bootstrap-table-next";
+import AttachmentsTable from "../../table/AttachmentsTable";
 
 class AddTodoItem extends Component {
   constructor(props) {
@@ -20,8 +21,7 @@ class AddTodoItem extends Component {
       notes: "",
       attachments: [],
       topic: {
-        id: topicId,
-        name: ""
+        id: topicId
       },
       errors: {},
       filesToUpload: []
@@ -29,13 +29,21 @@ class AddTodoItem extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onAttachmentsChange = this.onAttachmentsChange.bind(this);
+    this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { topicId } = this.props.match.params;
+    this.props.getTopic(topicId, this.props.history);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
+    const { topic } = nextProps;
+    this.setState({ topic: topic });
   }
 
   onChange(e) {
@@ -43,20 +51,40 @@ class AddTodoItem extends Component {
   }
 
   onAttachmentsChange(e) {
-    let index = this.state.attachments.length;
-    const files = e.target.files;
+    let index = this.state.attachments.length + 1;
+    const newFiles = e.target.files;
     const attachmentsFromFiles = [];
-    for (var file of files) {
+    for (const file of newFiles) {
       const attachmentFromFile = {
-        id: index++,
-        name: file.name,
-        size: file.size
+        num: index++,
+        filename: file.name,
+        size: file.size,
+        key: file.name + file.size
       };
       attachmentsFromFiles.push(attachmentFromFile);
     }
     this.setState(prevState => ({
-      filesToUpload: [...prevState.filesToUpload, ...files],
+      filesToUpload: [...prevState.filesToUpload, ...newFiles],
       attachments: [...prevState.attachments, ...attachmentsFromFiles]
+    }));
+  }
+
+  onRemoveFile(attachmentToRemove) {
+    const modifiedAttachments = this.state.attachments.filter(
+      attachment =>
+        attachment.filename + attachment.size !==
+        attachmentToRemove.filename + attachmentToRemove.size
+    );
+    modifiedAttachments.forEach(function(attachment, index) {
+      attachment.num = ++index;
+    });
+    this.setState(prevState => ({
+      filesToUpload: prevState.filesToUpload.filter(
+        file =>
+          file.name + file.size !==
+          attachmentToRemove.filename + attachmentToRemove.size
+      ),
+      attachments: modifiedAttachments
     }));
   }
 
@@ -66,7 +94,6 @@ class AddTodoItem extends Component {
     const newTodoItem = {
       element: this.state.element,
       notes: this.state.notes,
-      attachments: this.state.attachments,
       topic: {
         id: this.state.topic.id
       }
@@ -85,18 +112,17 @@ class AddTodoItem extends Component {
     const { errors } = this.state;
     const columns = [
       {
-        dataField: "id",
+        dataField: "num",
         text: "File Number"
       },
       {
-        dataField: "name",
+        dataField: "filename",
         text: "File Name"
       },
       {
         dataField: "size",
         text: "File Size"
-      },
-      { dataField: "", text: "" }
+      }
     ];
 
     return (
@@ -107,10 +133,10 @@ class AddTodoItem extends Component {
               <Link to={`/topicBoard/${topicId}`} className="btn btn-light">
                 Back to Topic Board
               </Link>
-              <h4 className="display-4 text-center">Add Todo Item</h4>
-              <p className="lead text-center">
+              <h4 className="display-4 text-center">
                 Topic Name: {this.state.topic.name}
-              </p>
+              </h4>
+              <p className="lead text-center">Add Todo Item</p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <input
@@ -150,17 +176,17 @@ class AddTodoItem extends Component {
                       "is-invalid": errors.attachments
                     })}
                     name="attachments"
-                    //value={this.state.attachments}
                     onChange={this.onAttachmentsChange}
                   />
                   {errors.attachments && (
                     <div className="invalid-feedback">{errors.attachments}</div>
                   )}
                 </div>
-                <BootstrapTable
-                  keyField="id"
-                  data={this.state.attachments}
-                  columns={columns}
+                <AttachmentsTable
+                  keyField="key"
+                  dataRows={this.state.attachments}
+                  dataColumns={columns}
+                  handleClick={this.onRemoveFile}
                 />
 
                 <input
@@ -177,6 +203,8 @@ class AddTodoItem extends Component {
 }
 
 AddTodoItem.propTypes = {
+  getTopic: PropTypes.func.isRequired,
+  topic: PropTypes.object.isRequired,
   addTodoItem: PropTypes.func.isRequired,
   addTodoItemAttachments: PropTypes.func.isRequired,
   addTodoItemAttachments2: PropTypes.func.isRequired,
@@ -184,10 +212,11 @@ AddTodoItem.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  topic: state.appTopic.topic,
   errors: state.errors
 });
 
 export default connect(
   mapStateToProps,
-  { addTodoItem, addTodoItemAttachments, addTodoItemAttachments2 }
+  { getTopic, addTodoItem, addTodoItemAttachments, addTodoItemAttachments2 }
 )(AddTodoItem);

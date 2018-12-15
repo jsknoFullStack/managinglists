@@ -21,12 +21,20 @@ class TodoItem extends Component {
             <div className="col-md-8">
               <h5 className="card-title">{todoItem.element}</h5>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-1">
               <Link
                 to={`/topic/${topicId}/viewTodoItem/${todoItem.id}`}
                 className="btn btn-primary"
               >
-                View / Update
+                View
+              </Link>
+            </div>
+            <div className="col-md-1">
+              <Link
+                to={`/topic/${topicId}/updateTodoItem/${todoItem.id}`}
+                className="btn btn-primary"
+              >
+                Update
               </Link>
             </div>
             <div className="col-md-2">

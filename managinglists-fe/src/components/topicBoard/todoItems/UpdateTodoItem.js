@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getTodoItem, updateTodoItem } from "../../../actions/todoItemActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-import BootstrapTable from "react-bootstrap-table-next";
+import AttachmentsTable from "../../table/AttachmentsTable";
 
 class UpdateTodoItem extends Component {
   constructor(props) {
@@ -17,16 +17,16 @@ class UpdateTodoItem extends Component {
       notes: "",
       attachments: [],
       topic: {
-        id: topicId,
-        name: ""
+        id: topicId
       },
       errors: {},
       filesToUpload: [],
-      convertedFilesToUpload: []
+      allAttachments: []
     };
 
     this.onChange = this.onChange.bind(this);
-    this.onAttachementsChange = this.onAttachementsChange.bind(this);
+    this.onAttachmentsChange = this.onAttachmentsChange.bind(this);
+    this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -41,6 +41,12 @@ class UpdateTodoItem extends Component {
     }
     const { id, element, notes, attachments, topic } = nextProps.todoItem;
 
+    const allAttachments = attachments.slice();
+    allAttachments.forEach(function(attachment, index) {
+      attachment.num = ++index;
+      attachment.key = attachment.filename + attachment.size;
+    });
+
     this.setState({
       id: id,
       element: element,
@@ -48,7 +54,7 @@ class UpdateTodoItem extends Component {
       attachments: attachments,
       topic: topic,
       filesToUpload: [],
-      convertedFilesToUpload: []
+      allAttachments: allAttachments
     });
   }
 
@@ -56,30 +62,58 @@ class UpdateTodoItem extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onAttachementsChange(e) {
-    let index = this.state.convertedFilesToUpload.length;
-    const files = e.target.files;
-    const convertedFiles = [];
-    for (const file of files) {
-      const convertedFile = {
-        id: index++,
-        name: file.name,
-        size: file.size
+  onAttachmentsChange(e) {
+    let index = this.state.allAttachments.length;
+    const newFiles = e.target.files;
+    const attachmentsFromFiles = [];
+    for (const file of newFiles) {
+      const attachmentFromFile = {
+        num: ++index,
+        filename: file.name,
+        size: file.size,
+        key: file.name + file.size
       };
-      convertedFiles.push(convertedFile);
+      attachmentsFromFiles.push(attachmentFromFile);
     }
     this.setState(prevState => ({
-      filesToUpload: [...prevState.filesToUpload, ...files],
-      convertedFilesToUpload: [
-        ...prevState.convertedFilesToUpload,
-        ...convertedFiles
-      ]
+      filesToUpload: [...prevState.filesToUpload, ...newFiles],
+      allAttachments: [...prevState.allAttachments, ...attachmentsFromFiles]
     }));
+  }
+
+  onRemoveFile(attachmentToRemove) {
+    if (attachmentToRemove.id) {
+      this.setState(prevState => ({
+        attachments: prevState.attachments.filter(
+          attachment => attachment.id !== attachmentToRemove.id
+        )
+      }));
+    } else {
+      this.setState(prevState => ({
+        filesToUpload: prevState.filesToUpload.filter(
+          file =>
+            file.name + file.size !==
+            attachmentToRemove.filename + attachmentToRemove.size
+        )
+      }));
+    }
+
+    const modifiedAllAttachments = this.state.allAttachments.filter(
+      attachment =>
+        attachment.filename + attachment.size !==
+        attachmentToRemove.filename + attachmentToRemove.size
+    );
+    modifiedAllAttachments.forEach(function(attachment, index) {
+      attachment.num = ++index;
+    });
+
+    this.setState({ allAttachments: modifiedAllAttachments });
   }
 
   onSubmit(e) {
     e.preventDefault();
-    const newTodoItem = {
+
+    const updatedTodoItem = {
       id: this.state.id,
       element: this.state.element,
       notes: this.state.notes,
@@ -88,13 +122,12 @@ class UpdateTodoItem extends Component {
         id: this.state.topic.id
       }
     };
-    const files = new FormData();
-    files.append("file", this.state.attachments);
-    files.append("name", "fileName");
+
     this.props.updateTodoItem(
+      updatedTodoItem,
+      this.state.filesToUpload,
       this.state.topic.id,
       this.state.id,
-      newTodoItem,
       this.props.history
     );
   }
@@ -104,18 +137,17 @@ class UpdateTodoItem extends Component {
     const { errors } = this.state;
     const columns = [
       {
-        dataField: "id",
+        dataField: "num",
         text: "File Number"
       },
       {
-        dataField: "name",
+        dataField: "filename",
         text: "File Name"
       },
       {
         dataField: "size",
         text: "File Size"
-      },
-      { dataField: "", text: "" }
+      }
     ];
 
     return (
@@ -126,10 +158,10 @@ class UpdateTodoItem extends Component {
               <Link to={`/topicBoard/${topicId}`} className="btn btn-light">
                 Back to Topic Board
               </Link>
-              <h4 className="display-4 text-center">View/Update Todo Item</h4>
-              <p className="lead text-center">
+              <h4 className="display-4 text-center">
                 Topic Name: {this.state.topic.name}
-              </p>
+              </h4>
+              <p className="lead text-center">Update Todo Item</p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <input
@@ -168,18 +200,20 @@ class UpdateTodoItem extends Component {
                     className={classnames("form-control form-control-lg ", {
                       "is-invalid": errors.attachments
                     })}
-                    name="attachments"
-                    value={this.state.attachments}
+                    name="allAttachments"
                     onChange={this.onAttachmentsChange}
                   />
-                  {errors.attachments && (
-                    <div className="invalid-feedback">{errors.attachments}</div>
+                  {errors.allAttachments && (
+                    <div className="invalid-feedback">
+                      {errors.allAttachments}
+                    </div>
                   )}
                 </div>
-                <BootstrapTable
-                  keyField="id"
-                  data={this.state.convertedFilesToUpload}
-                  columns={columns}
+                <AttachmentsTable
+                  keyField="key"
+                  dataRows={this.state.allAttachments}
+                  dataColumns={columns}
+                  handleClick={this.onRemoveFile}
                 />
 
                 <input

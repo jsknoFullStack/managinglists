@@ -32,10 +32,19 @@ public class TodoItemController {
 
     @PostMapping(value = "/attachments", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoItem createNewTodoItemWithAttachement(@Valid @RequestPart("todoItem") TodoItem todoItem,
+    public TodoItem createNewTodoItemWithAttachements(@Valid @RequestPart("todoItem") TodoItem todoItem,
                                                      @RequestPart("files") MultipartFile[] files,
                                                      @PathVariable Long topicId) {
-        return todoItemService.saveOrUpdateTodoItem(todoItem, files, topicId);
+        return todoItemService.saveTodoItem(todoItem, files, topicId);
+    }
+
+    @PatchMapping(value="{todoItemId}/attachments", consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.OK)
+    public TodoItem updateTodoItemWithAttachments(@Valid @RequestPart TodoItem todoItem,
+                                                  @RequestPart("files") MultipartFile[] files,
+                                                  @PathVariable Long topicId,
+                                                  @PathVariable Long todoItemId) {
+        return todoItemService.updateTodoItem(todoItem, files, topicId);
     }
 
     @PatchMapping("/{todoItemId}")
@@ -60,10 +69,10 @@ public class TodoItemController {
     @DeleteMapping("/{todoItemId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTodoItemById(
-            @PathVariable Long topicI,
+            @PathVariable Long topicId,
             @Positive(message = "todoItemId->The todoItemId must be a positive number")
             @PathVariable Long todoItemId) {
-        todoItemService.deleteTodoItemById(todoItemId);
+        todoItemService.deleteTodoItemById(topicId, todoItemId);
     }
 
 

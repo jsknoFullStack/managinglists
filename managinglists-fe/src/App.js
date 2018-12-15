@@ -12,6 +12,7 @@ import UpdateTopic from "./components/topic/UpdateTopic";
 import TopicBoard from "./components/topicBoard/TopicBoard";
 import AddTodoItem from "./components/topicBoard/todoItems/AddTodoItem";
 import UpdateTodoItem from "./components/topicBoard/todoItems/UpdateTodoItem";
+import ViewTodoItem from "./components/topicBoard/todoItems/ViewTodoItem";
 
 class App extends Component {
   render() {
@@ -31,8 +32,13 @@ class App extends Component {
             />
             <Route
               exact
-              path="/topic/:topicId/viewTodoItem/:todoItemId"
+              path="/topic/:topicId/updateTodoItem/:todoItemId"
               component={UpdateTodoItem}
+            />
+            <Route
+              exact
+              path="/topic/:topicId/viewTodoItem/:todoItemId"
+              component={ViewTodoItem}
             />
           </div>
         </Router>

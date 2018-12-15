@@ -98,13 +98,36 @@ export const addTodoItemAttachments2 = (
 };
 
 export const updateTodoItem = (
+  todoItem,
+  files,
   topicId,
   todoItemId,
-  todoItem,
   history
 ) => async dispatch => {
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data"
+    }
+  };
+
+  const formDataFiles = new FormData();
+  //formDataFiles.set("todoItem", todoItem);
+  formDataFiles.append(
+    "todoItem",
+    new Blob([JSON.stringify(todoItem)], {
+      type: "application/json"
+    })
+  );
+  for (const file of files) {
+    formDataFiles.append("files", file);
+  }
+
   try {
-    await axios.post(`/topic/${topicId}/todoitem/${todoItemId}`, todoItem);
+    await axios.patch(
+      `/topic/${topicId}/todoitem/${todoItemId}/attachments`,
+      formDataFiles
+      //config
+    );
     history.push(`/topicBoard/${topicId}`);
     dispatch({
       type: GET_ERRORS,

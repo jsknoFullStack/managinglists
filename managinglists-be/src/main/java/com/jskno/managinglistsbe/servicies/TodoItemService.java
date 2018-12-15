@@ -16,7 +16,9 @@ public interface TodoItemService {
 
     TodoItem getTodoItemById(Long id);
 
-    void deleteTodoItemById(Long id);
+    void deleteTodoItemById(Long topicId, Long todoItemId);
 
-    TodoItem saveOrUpdateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId);
+    TodoItem saveTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId);
+
+    TodoItem updateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId);
 }

@@ -2,13 +2,16 @@ package com.jskno.managinglistsbe.servicies;
 
 import com.jskno.managinglistsbe.domain.Attachment;
 import com.jskno.managinglistsbe.domain.TodoItem;
+import com.jskno.managinglistsbe.domain.Topic;
 import com.jskno.managinglistsbe.exception.TodoItemNotFoundException;
 import com.jskno.managinglistsbe.repositories.TodoItemRepository;
+import com.jskno.managinglistsbe.uploadfile.FileStorageProperties;
 import com.jskno.managinglistsbe.uploadfile.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +19,16 @@ import java.util.Optional;
 public class TodoItemServiceImpl implements TodoItemService{
 
     @Autowired
+    private TopicService topicService;
+
+    @Autowired
     private TodoItemRepository todoItemRepository;
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    FileStorageProperties fileStorageProperties;
 
     @Override
     public TodoItem saveOrUpdateTodoItem(TodoItem todoItem) {
@@ -44,24 +53,61 @@ public class TodoItemServiceImpl implements TodoItemService{
     }
 
     @Override
-    public void deleteTodoItemById(Long id) {
-        Optional<TodoItem> todoItem = todoItemRepository.findById(id);
-        if(todoItem.isPresent()) {
-            throw new TodoItemNotFoundException(String.format("Cannot delete Todo Item with ID '[%s]'. This item does not exist", id));
-        }
-        todoItemRepository.delete(todoItem.get());
+    public void deleteTodoItemById(Long topicId, Long todoItemId) {
+        TodoItem todoItem = this.findTodoItemById(topicId, todoItemId);
+        todoItemRepository.delete(todoItem);
     }
 
     @Override
-    public TodoItem saveOrUpdateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId) {
-        for(Attachment attachment : todoItem.getAttachments()) {
+    @Transactional
+    public TodoItem saveTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId) {
+        Topic topic = topicService.findTopicById(topicId);
+        String storagePath = fileStorageProperties.getUploadDirectory().concat("\\").concat(topic.getName());
+        for(MultipartFile file : files) {
+            Attachment attachment = new Attachment();
             attachment.setId(null);
-            attachment.setFilename("12412");
+            attachment.setFilename(file.getOriginalFilename());
+            attachment.setSize(file.getSize());
+            attachment.setPath(storagePath);
+
             attachment.setTodoItem(todoItem);
-            attachment.setPath("32535");
+            todoItem.addAttachment(attachment);
         }
         TodoItem savedTodoItem = todoItemRepository.save(todoItem);
-        fileStorageService.storeFile(files);
+        fileStorageService.storeFiles(topic.getName(), files);
         return savedTodoItem;
+    }
+
+    @Override
+    @Transactional
+    public TodoItem updateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId) {
+        Topic topic = topicService.findTopicById(topicId);
+        String storagePath = fileStorageProperties.getUploadDirectory().concat("\\").concat(topic.getName());
+        todoItem.getAttachments().forEach(attachment -> attachment.setTodoItem(todoItem));
+        for(MultipartFile file : files) {
+            Attachment attachment = new Attachment();
+            attachment.setId(null);
+            attachment.setFilename(file.getOriginalFilename());
+            attachment.setSize(file.getSize());
+            attachment.setPath(storagePath);
+
+            attachment.setTodoItem(todoItem);
+            todoItem.addAttachment(attachment);
+        }
+        TodoItem savedTodoItem = todoItemRepository.save(todoItem);
+        fileStorageService.storeFiles(topic.getName(), files);
+        return savedTodoItem;
+    }
+
+    private TodoItem findTodoItemById(Long topicId, Long todoItemId) {
+        this.topicService.findTopicById(topicId);
+        Optional<TodoItem> todoItem = todoItemRepository.findById(todoItemId);
+        if(!todoItem.isPresent()) {
+            throw new TodoItemNotFoundException(String.format("Cannot delete Todo Item with ID '[%s]'. This item does not exist", todoItemId));
+        }
+        if(!topicId.equals(todoItem.get().getTopic().getId())) {
+            throw new TodoItemNotFoundException(String.format("Todo Item with ID '[%s]', does not exist in Topic with ID '[%s]'.", todoItemId, topicId));
+        }
+        return todoItem.get();
     }
 }
