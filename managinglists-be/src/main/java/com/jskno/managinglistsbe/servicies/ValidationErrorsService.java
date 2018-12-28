@@ -1,5 +1,6 @@
 package com.jskno.managinglistsbe.servicies;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,15 @@ import java.util.stream.Collectors;
 public class ValidationErrorsService {
 
     public Map<String, String> mapErrorsToMap(BindingResult result) {
-        return result.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        Map<String, String> annotationsErrors = result.getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        if(MapUtils.isEmpty(annotationsErrors)) {
+            annotationsErrors = result.getAllErrors().stream().collect(Collectors.toMap(
+                    x -> x.getDefaultMessage().split(Pattern.quote("->"))[0],
+                    x -> x.getDefaultMessage().split(Pattern.quote("->"))[1])
+            );
+        }
+        return annotationsErrors;
     }
 
     public ResponseEntity<?> mapErrorsToResponseEntity(BindingResult result) {
