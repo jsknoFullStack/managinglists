@@ -10,9 +10,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @ControllerAdvice
 @RestController
@@ -65,5 +67,13 @@ public class GlobalExceptionHandler {
         Map<String, String> map = new HashMap<>();
         map.put(ex.getLocalizedMessage(), ex.getMessage());
         return map;
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public EntityNotFoundResponse handle(EntityNotFoundException ex) {
+        return new EntityNotFoundResponse(
+                ex.getMessage().split(Pattern.quote("->"))[0],
+                ex.getMessage().split(Pattern.quote("->"))[1]);
     }
 }

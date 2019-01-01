@@ -11,11 +11,12 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("SELECT t FROM Topic t WHERE t.name = :name")
     Topic findTopicByName(String name);
 
+    Topic findByName(String name);
+
     //@Query("SELECT t FROM Topic t WHERE t.name LIKE '%' || :name")
     @Query("SELECT t FROM Topic t WHERE t.name LIKE CONCAT('%',:name,'%')")
     List<Topic> findTopicMatchingName(String name);
 
-    void deleteTopicByName(String name);
-
+    List<Topic> findAllByUser_Username(String username);
 
  }

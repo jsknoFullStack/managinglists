@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jskno.managinglistsbe.domain.listener.EntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
 @EntityListeners(EntityListener.class)
-public class AbstractEntity {
+public class AbstractEntity implements Serializable {
 
     @Column(name = "CREATED_BY_USER")
     @JsonIgnore

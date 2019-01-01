@@ -1,25 +1,34 @@
 package com.jskno.managinglistsbe.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
+import com.jskno.managinglistsbe.domain.validations.OnCreateChecks;
+import com.jskno.managinglistsbe.domain.validations.OnUpdateChecks;
+import com.jskno.managinglistsbe.security.persistence.User;
+import com.jskno.managinglistsbe.security.persistence.UserInTopicSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "topics")
+@Table(name = "topics", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "username"})})
 public class Topic extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Null(groups = OnCreateChecks.class, message = "The topic id must be null for a new topic")
+    @NotNull(groups = OnUpdateChecks.class, message = "The topic id is required to update topic operation")
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     @NotNull(message = "The topic name is required")
     @Size(min = 3, max = 45, message = "The topic name must be between 3 and 45 characters")
     private String name;
@@ -31,7 +40,13 @@ public class Topic extends AbstractEntity {
     @JsonIgnore
     private List<TodoItem> todoItems;
 
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    @JsonSerialize(using = UserInTopicSerializer.class)
+    private User user;
+
     public Topic() {
+        this.todoItems = new ArrayList<>();
     }
 
     public Topic(Long topicId) {
@@ -68,6 +83,14 @@ public class Topic extends AbstractEntity {
 
     public void setTodoItems(List<TodoItem> todoItems) {
         this.todoItems = todoItems;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

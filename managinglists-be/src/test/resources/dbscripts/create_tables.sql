@@ -6,6 +6,7 @@ CREATE TABLE `topics` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL UNIQUE,
   `description` varchar(255),
+  `username` varchar(255),
   `created_at` datetime(6) DEFAULT NULL,
   `created_by_user` varchar(255) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE `topics` (
   `deleted_at` datetime(6) DEFAULT NULL,
   `deleted_by_user` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `topics_uk` (`name`)
+  UNIQUE KEY `topics_uk` (`name`, `usermane`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `todoitems` (

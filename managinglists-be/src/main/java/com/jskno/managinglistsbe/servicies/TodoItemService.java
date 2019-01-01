@@ -8,17 +8,19 @@ import java.util.List;
 
 public interface TodoItemService {
 
-    TodoItem saveOrUpdateTodoItem(TodoItem todoItem);
+    TodoItem addTodoItem(TodoItem todoItem, Long topicId);
+
+    TodoItem updateTodoItem(TodoItem todoItem, Long topicId, Long todoItemId);
 
     List<TodoItem> getTodoItemsByTopicName(String topicName);
 
     List<TodoItem> getTodoItemsByTopicId(Long topicId);
 
-    TodoItem getTodoItemById(Long id);
+    TodoItem getTodoItemById(Long topicId, Long id);
 
     void deleteTodoItemById(Long topicId, Long todoItemId);
 
-    TodoItem saveTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId);
+    TodoItem addTodoItemWithAttachments(TodoItem todoItem, MultipartFile[] files, Long topicId);
 
-    TodoItem updateTodoItem(TodoItem todoItem, MultipartFile[] files, Long topicId);
+    TodoItem updateTodoItemWithAttachments(TodoItem todoItem, MultipartFile[] files, Long id, Long topicId);
 }

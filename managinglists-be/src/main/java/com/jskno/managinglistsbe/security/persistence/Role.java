@@ -1,5 +1,6 @@
 package com.jskno.managinglistsbe.security.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.ISBN;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     private List<User> users;
 
     @ManyToMany

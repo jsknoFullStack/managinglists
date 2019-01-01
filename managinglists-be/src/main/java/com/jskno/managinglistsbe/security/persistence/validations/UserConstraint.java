@@ -1,4 +1,4 @@
-package com.jskno.managinglistsbe.security.persistence;
+package com.jskno.managinglistsbe.security.persistence.validations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
