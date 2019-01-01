@@ -1,4 +1,7 @@
-package com.jskno.managinglistsbe.security.persistence;
+package com.jskno.managinglistsbe.security.persistence.validations;
+
+import com.jskno.managinglistsbe.security.persistence.User;
+import com.jskno.managinglistsbe.security.persistence.validations.UserConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

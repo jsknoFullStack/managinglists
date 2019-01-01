@@ -114,4 +114,9 @@ public class FileStorageService {
         }
     }
 
+    public String getStoragePath(String topicName) {
+        return fileStorageProperties.getUploadDirectory().concat("\\").concat(topicName);
+    }
+
+
 }

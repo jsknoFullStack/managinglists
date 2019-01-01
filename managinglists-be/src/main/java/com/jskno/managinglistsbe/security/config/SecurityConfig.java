@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                // Class to handle the unauthorized request and send near response
+                // Class to handle the unauthorized request and send neat response
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 // Other wise the SecurityContextHolder.getContext() will keep the authentication object with data
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

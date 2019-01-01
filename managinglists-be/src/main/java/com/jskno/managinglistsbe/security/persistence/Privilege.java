@@ -1,5 +1,6 @@
 package com.jskno.managinglistsbe.security.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Privilege {
     private String name;
 
     @ManyToMany(mappedBy = "privileges")
+    @JsonIgnore
     private List<Role> roles;
 
     public Privilege() {

@@ -3,6 +3,8 @@ package com.jskno.managinglistsbe.security.persistence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jskno.managinglistsbe.domain.base.AbstractEntity;
+import com.jskno.managinglistsbe.security.persistence.validations.UserConstraint;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -21,6 +23,7 @@ public class User extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
+    @NaturalId
     @Email(message = "Username needs to be an email")
     @NotBlank(message = "Username is required")
     @Column(unique = true)

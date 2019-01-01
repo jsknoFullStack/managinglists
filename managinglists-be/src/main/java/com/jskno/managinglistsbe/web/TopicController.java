@@ -1,6 +1,8 @@
 package com.jskno.managinglistsbe.web;
 
 import com.jskno.managinglistsbe.domain.Topic;
+import com.jskno.managinglistsbe.domain.validations.OnCreateChecks;
+import com.jskno.managinglistsbe.domain.validations.OnUpdateChecks;
 import com.jskno.managinglistsbe.servicies.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @RestController
@@ -22,14 +23,14 @@ public class TopicController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public Topic createNewTopic(@Valid @RequestBody Topic topic) {
-        return topicService.saveOrUpdateTopic(topic);
+    public Topic createNewTopic(@Validated(OnCreateChecks.class) @RequestBody Topic topic) {
+        return topicService.saveTopic(topic);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public Topic updateTopic(@Valid @RequestBody Topic topic, @PathVariable Long id) {
-        return topicService.saveOrUpdateTopic(topic);
+    public Topic updateTopic(@Validated(OnUpdateChecks.class) @RequestBody Topic topic) {
+        return topicService.updateTopic(topic);
     }
 
 
@@ -55,6 +56,8 @@ public class TopicController {
         return topicService.findAllTopics();
     }
 
+    // INI : CODE NOT USED
+
     /*
     @GetMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
@@ -73,5 +76,7 @@ public class TopicController {
         return "Topic with NAME: '".concat(name.toUpperCase()).concat("' was deleted succesfully.");
     }
     */
+
+    // END : CODE NOT USED
 
 }
