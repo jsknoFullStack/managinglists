@@ -1,4 +1,6 @@
 package com.jskno.managinglistsbe.domain.validations;
 
-public interface OnUpdateChecks {
+import javax.validation.groups.Default;
+
+public interface OnUpdateChecks extends Default {
 }

@@ -48,18 +48,18 @@ public class User extends AbstractEntity {
     @Transient
     private String confirmPassword;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "users_roles",
+//            joinColumns = @JoinColumn(
+//                    name = "user_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(
+//                    name = "role_id", referencedColumnName = "id"))
+//    private List<Role> roles;
 
-    public User() {
-        this.roles = new ArrayList<>();
-    }
+//    public User() {
+//        this.roles = new ArrayList<>();
+//    }
 
     public Long getId() {
         return id;
@@ -113,15 +113,15 @@ public class User extends AbstractEntity {
         this.confirmPassword = confirmPassword;
     }
 
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
+//    public List<Role> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(List<Role> roles) {
+//        this.roles = roles;
+//    }
+//
+//    public void addRole(Role role) {
+//        this.roles.add(role);
+//    }
 }

@@ -20,9 +20,9 @@ public class Role {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    @JsonIgnore
-    private List<User> users;
+//    @ManyToMany(mappedBy = "roles")
+//    @JsonIgnore
+//    private List<User> users;
 
     @ManyToMany
     @JoinTable(
@@ -34,7 +34,7 @@ public class Role {
     private List<Privilege> privileges;
 
     public Role() {
-        this.users = new ArrayList<>();
+        //this.users = new ArrayList<>();
         this.privileges = new ArrayList<>();
     }
 
@@ -54,13 +54,13 @@ public class Role {
         this.name = name;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
 
     public List<Privilege> getPrivileges() {
         return privileges;
