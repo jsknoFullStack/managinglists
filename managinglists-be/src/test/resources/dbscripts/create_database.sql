@@ -13,4 +13,4 @@ GRANT ALL PRIVILEGES ON todolist_db.* TO 'todolistuser'@'localhost' WITH GRANT O
 # See the MySQL Reference Manual for details:
 # https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html
 #
-#ALTER USER 'hbstudent'@'localhost' IDENTIFIED WITH mysql_native_password BY 'hbstudent';
+ALTER USER 'todolistuser'@'localhost' IDENTIFIED WITH mysql_native_password BY 'todolistuser';
