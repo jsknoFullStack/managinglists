@@ -94,35 +94,28 @@ public class SQLStatementCountValidatorTest {
             SQLStatementCountValidator.assertSelectCount(1);
     }
 
-    @Test
-    // To make this test work change the relationship fetch policy to EAGER in the entity class Topic related to todoItems attribute.
-    public void testJoinFetchWithEagerStrategy() {
-
-        List<Topic> topics = generateTopics();
-        topics.forEach(topic -> topicRepository.save(topic));
-
-        LOGGER.info("Join fetch to prevent N+1. Counter to zero");
-        SQLStatementCountValidator.reset();
-
-        List<Topic> retrievedTopics = topicRepository.findTopicAndITemsMatchingName("Literature");
-        List<Topic> retrievedTopics2 = emf.createEntityManager()
-                .createQuery("select distinct t from Topic t join fetch t.todoItems", Topic.class)
-                .getResultList();
-
-        Assert.assertNotNull(retrievedTopics2);
-        assertEquals( 1, retrievedTopics2.size() );
-        Assert.assertNotNull(retrievedTopics2.get(0).getTodoItems());
-        assertEquals( 2, retrievedTopics2.get(0).getTodoItems().size() );
-
-        for(TodoItem todoItem : retrievedTopics2.get(0).getTodoItems()) {
-            assertNotNull(todoItem.getId());
-            assertNotNull(todoItem.getTopic());
-            assertNotNull(todoItem.getTopic().getTodoItems());
-            assertEquals(2, todoItem.getTopic().getTodoItems().size());
-        }
-
-        SQLStatementCountValidator.assertSelectCount(1);
-    }
+//    @Test
+//    public void testNoBatch() {
+//
+//        List<Topic> topics = generateTopics();
+//        SQLStatementCountValidator.reset();
+//        LOGGER.info("Insert counter when we save several entities. Counter to zero");
+//        topics.forEach(topic -> topicRepository.save(topic));
+//        SQLStatementCountValidator.assertInsertCount(4);
+//
+//    }
+//
+//    @Test
+//    public void testBatch() {
+//
+//        //emf.getProperties().put("hibernate.jdbc.batch_size", "5");
+//        List<Topic> topics = generateTopics();
+//        SQLStatementCountValidator.reset();
+//        LOGGER.info("Insert counter when we save several entities activating BATCH. Counter to zero");
+//        topics.forEach(topic -> topicRepository.save(topic));
+//        SQLStatementCountValidator.assertInsertCount(2);
+//
+//    }
 
     private List<Topic> generateTopics() {
         List<Topic> topics = new ArrayList<>();

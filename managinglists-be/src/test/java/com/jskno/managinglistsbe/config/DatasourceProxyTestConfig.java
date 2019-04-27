@@ -74,6 +74,13 @@ public class DatasourceProxyTestConfig {
         jpaProperties.put("hibernate.hbm2ddl.auto", hbm2ddlType);
         jpaProperties.put("hibernate.dialect", dialect);
         jpaProperties.put("hibernate.format_sql", formatSql);
+        jpaProperties.put("hibernate.generate_statistics", true);
+
+        // Hibernate disable BATCH FOR IDENTITY ID GENERATOR STRATEGY
+        // https://stackoverflow.com/questions/27697810/hibernate-disabled-insert-batching-when-using-an-identity-identifier-generator
+//        jpaProperties.put("hibernate.jdbc.batch_size", "5");
+//        jpaProperties.put("hibernate.order_inserts", true);
+
         result.setJpaPropertyMap(jpaProperties);
 
         return result;
