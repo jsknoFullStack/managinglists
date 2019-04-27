@@ -36,7 +36,7 @@ public class Topic extends AbstractEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<TodoItem> todoItems;
 

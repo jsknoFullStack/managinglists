@@ -19,4 +19,8 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findAllByUser_Username(String username);
 
+    @Query("SELECT DISTINCT t FROM Topic t JOIN FETCH t.todoItems ti WHERE t.name LIKE CONCAT('%',:name,'%')")
+//    @Query("SELECT t FROM Topic t JOIN t.todoItems ti WHERE t.name LIKE CONCAT('%',:name,'%')")
+    List<Topic> findTopicAndITemsMatchingName(String name);
+
  }

@@ -17,7 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
         jsr250Enabled = true,
         prePostEnabled = true
 )
-@Profile({"dev"})
+@Profile({"dev", "test"})
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
